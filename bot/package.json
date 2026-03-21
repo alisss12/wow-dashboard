@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "axios": "^1.6.2",
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.3.1",
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2"
+  },
+  "name": "bot",
+  "version": "1.0.1",
+  "description": "A Bot",
+  "main": "d.js",
+  "devDependencies": {
+    "eslint": "^8.45.0"
+  },
+  "scripts": {
+    "test": "test 123"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "keywords": [
+    "Bot!"
+  ],
+  "author": "ali.kaz",
+  "license": "ISC"
+}

@@ -50,35 +50,57 @@
             </div>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden mb-8">
-            <div class="px-6 py-5 border-b border-gray-200 bg-gray-50/50">
-                <h3 class="text-lg font-bold text-gray-900">Latest Available Runs</h3>
+        <div class="bg-[#222] border border-gray-800 rounded-xl shadow-sm overflow-hidden mb-8">
+            <div class="px-6 py-5 border-b border-gray-800 bg-[#2b2b2b]">
+                <h3 class="text-lg font-bold text-gray-100">Available Posted Runs</h3>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                <table class="w-full text-left whitespace-nowrap">
+                    <thead class="bg-gray-900 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-800">
                         <tr>
-                            <th class="px-6 py-4">Title</th>
-                            <th class="px-6 py-4">Instance / Diff</th>
-                            <th class="px-6 py-4">Payout</th>
+                            <th class="px-6 py-4">Time</th>
+                            <th class="px-6 py-4">Raid Name</th>
+                            <th class="px-6 py-4 text-center">VIP</th>
+                            <th class="px-6 py-4">Difficulty</th>
+                            <th class="px-6 py-4">Progress</th>
+                            <th class="px-6 py-4">Client</th>
+                            <th class="px-6 py-4">Status</th>
                             <th class="px-6 py-4 text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody class="divide-y divide-gray-800 bg-[#222]">
                         @forelse($availableRaids as $raid)
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 font-bold text-gray-900">{{ $raid->title }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $raid->instance_name }} <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-200 text-gray-700 ml-2 uppercase">{{ $raid->difficulty }}</span></td>
-                            <td class="px-6 py-4 text-sm font-bold text-emerald-600">{{ number_format($raid->price_per_spot) }} G</td>
+                        <tr class="hover:bg-[#2a2a2a] transition group">
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-bold text-emerald-500">{{ $raid->scheduled_at ? \Carbon\Carbon::parse($raid->scheduled_at)->format('d M — H:i') : 'N/A' }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm font-bold text-purple-400">{{ $raid->title }}</p>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <svg class="w-4 h-4 text-gray-500 mx-auto" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15 8H9L12 2Z M4 12L8 9V15L4 12Z M20 12L16 15V9L20 12Z"/></svg>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-medium text-gray-300">{{ $raid->difficulty }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-bold text-gray-300">0/6</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-bold text-gray-100">{{ $raid->buyer_name ?? 'N/A' }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400">Available</span>
+                            </td>
                             <td class="px-6 py-4 text-right">
-                                <button wire:click="takeSpot({{ $raid->id }})" class="bg-gray-900 hover:bg-gray-800 text-white text-[11px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg transition shadow-sm">
-                                    Apply
+                                <button wire:click="takeSpot({{ $raid->id }})" class="bg-[#1e1e1e] border border-gray-700 hover:bg-emerald-600 hover:text-white hover:border-emerald-500 text-gray-300 text-[11px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg transition shadow-sm">
+                                    Take Spot
                                 </button>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-sm text-gray-500 font-medium bg-gray-50/30">No available runs at the moment. Check back later.</td>
+                            <td colspan="8" class="px-6 py-12 text-center text-sm text-gray-500 font-medium bg-[#222]">No available runs at the moment. Check back later.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -88,42 +110,66 @@
         @endif
 
         @if(in_array($activeTab, ['full_raids', 'curves', 'mythic_raids', 'legacy', 'all_raids']))
-        <!-- Bookings Sub-Tabs -->
-        <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden mb-8">
-            <div class="px-6 py-5 border-b border-gray-200 bg-gray-50/50 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-gray-900 capitalize">{{ str_replace('_', ' ', $activeTab) }} listings</h3>
-                <span class="text-xs font-bold bg-red-100 text-red-700 px-3 py-1 rounded-full">{{ count($myBoosts) }} Active Selected</span>
+        <!-- My Active Runs (Booster) -->
+        <div class="bg-[#222] border border-gray-800 rounded-xl shadow-sm overflow-hidden mb-8">
+            <div class="px-6 py-5 border-b border-gray-800 bg-[#2b2b2b] flex justify-between items-center">
+                <h3 class="text-lg font-bold text-gray-100 capitalize">My Active Runs</h3>
             </div>
-            <div class="p-6">
-                <!-- Grid of runs matching this category (mocked gracefully) -->
-                @if(count($myBoosts) > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    @foreach($myBoosts as $boost)
-                    <div class="border border-gray-200 rounded-xl p-5 hover:shadow-md transition bg-white relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h4 class="text-gray-900 font-bold">{{ $boost->event->title ?? 'N/A' }}</h4>
-                                <span class="text-xs font-bold text-gray-500 mt-1 block">{{ $boost->event->scheduled_at?->format('d M — H:i') }}</span>
-                            </div>
-                            <span class="bg-gray-100 text-gray-700 text-[10px] font-extrabold px-2 py-1 rounded uppercase tracking-wider">{{ $boost->role }}</span>
-                        </div>
-                        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
-                            <button class="text-xs font-bold text-red-600 hover:text-red-700 uppercase tracking-widest transition">Copy Info</button>
-                            <span class="text-xs text-emerald-600 font-bold uppercase tracking-widest flex items-center gap-1">
-                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                                Assigned
-                            </span>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                @else
-                <div class="text-center py-16">
-                    <svg class="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                    <p class="text-gray-500 font-medium">No active bookings found in this category.</p>
-                </div>
-                @endif
+            <div class="overflow-x-auto">
+                <table class="w-full text-left whitespace-nowrap">
+                    <thead class="bg-gray-900 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-800">
+                        <tr>
+                            <th class="px-6 py-4">Time</th>
+                            <th class="px-6 py-4">Raid Name</th>
+                            <th class="px-6 py-4 text-center">VIP</th>
+                            <th class="px-6 py-4">Difficulty</th>
+                            <th class="px-6 py-4">Progress</th>
+                            <th class="px-6 py-4">Leader</th>
+                            <th class="px-6 py-4">Client</th>
+                            <th class="px-6 py-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800 bg-[#222]">
+                        @forelse($myBoosts as $boost)
+                        <tr class="hover:bg-[#2a2a2a] transition group">
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-bold text-emerald-500">{{ $boost->event->scheduled_at?->format('d M — H:i') }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm font-bold text-purple-400">{{ $boost->event->title ?? 'N/A' }}</p>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <svg class="w-4 h-4 text-gray-500 mx-auto" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15 8H9L12 2Z M4 12L8 9V15L4 12Z M20 12L16 15V9L20 12Z"/></svg>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-medium text-gray-300">{{ $boost->event->difficulty ?? 'N/A' }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-bold text-gray-300">0/6</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-medium text-gray-300">{{ $boost->event->leader_name ?? 'TBD' }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-bold text-gray-100">{{ $boost->event->buyer_name ?? 'Client' }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                @if(($boost->event->status ?? '') === 'locked')
+                                    <span class="px-2 py-1 rounded text-xs font-bold bg-orange-500/20 text-orange-400">Locked</span>
+                                @elseif(($boost->event->status ?? '') === 'completed')
+                                    <span class="px-2 py-1 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400">Completed</span>
+                                @else
+                                    <span class="px-2 py-1 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400">Active</span>
+                                @endif
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="8" class="px-6 py-12 text-center text-sm text-gray-500 font-medium bg-[#222]">No active runs assigned to you yet.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
         @endif
@@ -148,27 +194,68 @@
 
     </div>
 
-    <!-- Modals remain dark-styled based on standard patterns or could be light. Using light/dark mix for modals -->
     <div x-show="showCreateModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4 shadow-2xl" x-cloak x-transition>
         <div @click="showCreateModal = false" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
-        <div class="relative w-full max-w-lg bg-white rounded-2xl p-8 shadow-2xl border border-gray-200">
+        <div class="relative w-full max-w-2xl bg-white rounded-2xl p-8 shadow-2xl border border-gray-200 max-h-[90vh] overflow-y-auto">
             <h2 class="text-xl font-bold text-gray-900 mb-6">Create New Custom Run</h2>
-            <form wire:submit.prevent="createNewRaid" class="space-y-4">
-                <input type="text" wire:model="title" placeholder="Raid Title (e.g. Heroic Vault)" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 font-medium focus:border-red-500 outline-none">
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="text" wire:model="instance" placeholder="Instance" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 font-medium focus:border-red-500 outline-none">
+            <form wire:submit.prevent="createNewRaid" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Row 1 -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Raid Type</label>
+                    <select wire:model="raid_type" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 font-medium focus:border-red-500 outline-none">
+                        <option value="">Select Type</option>
+                        <option value="Full Run">Full Run</option>
+                        <option value="Curve">Curve</option>
+                        <option value="Mythic Raid">Mythic Raid</option>
+                        <option value="Legacy">Legacy</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Difficulty</label>
                     <select wire:model="difficulty" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 font-medium focus:border-red-500 outline-none">
-                        <option value="">Difficulty</option>
+                        <option value="">Select Difficulty</option>
                         <option value="Normal">Normal</option>
                         <option value="Heroic">Heroic</option>
                         <option value="Mythic">Mythic</option>
                     </select>
                 </div>
-                <input type="datetime-local" wire:model="scheduled_at" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 font-medium focus:border-red-500 outline-none">
-                <input type="number" wire:model="price" placeholder="Price per Spot (Gold)" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 font-medium focus:border-red-500 outline-none">
-                <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-3 pt-3.5 rounded-lg text-sm transition uppercase tracking-widest mt-2 shadow-md">
-                    Initialize Run
-                </button>
+
+                <!-- Row 2 -->
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Scheduled Time</label>
+                    <input type="datetime-local" wire:model="scheduled_at" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 font-medium focus:border-red-500 outline-none">
+                </div>
+
+                <!-- Row 3 -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Group Type</label>
+                    <select wire:model="group_type" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 font-medium focus:border-red-500 outline-none">
+                        <option value="">Select Group</option>
+                        <option value="Full Run">Full Run</option>
+                        <option value="Partial">Partial</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Loot Type</label>
+                    <select wire:model="loot_type" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 font-medium focus:border-red-500 outline-none">
+                        <option value="">Select Loot</option>
+                        <option value="Saved">Saved</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Unsaved">Unsaved</option>
+                    </select>
+                </div>
+
+                <!-- Finances -->
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Base Pot Size (Gold)</label>
+                    <input type="number" wire:model="pot_size" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-900 font-medium focus:border-red-500 outline-none" min="0">
+                </div>
+
+                <div class="md:col-span-2 mt-4">
+                    <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-3 pt-3.5 rounded-lg text-sm transition uppercase tracking-widest shadow-md">
+                        Initialize Run
+                    </button>
+                </div>
             </form>
         </div>
     </div>

@@ -27,8 +27,8 @@ class DashboardController extends Controller
             }
 
             $component = match (true) {
-                in_array($user->account_type, ['booster', 'staff', 'admin']) => 'booster-dashboard',
-                $user->account_type === 'advertiser' => 'advertiser-dashboard',
+                $user->isBooster() => 'booster-dashboard',
+                $user->isAdvertiser() => 'advertiser-dashboard',
                 default => 'booster-dashboard',
             };
 
@@ -176,7 +176,10 @@ class DashboardController extends Controller
                     'event' => $s->event ? [
                         'id' => $s->event->id,
                         'title' => $s->event->title,
+                        'instance_name' => $s->event->instance_name,
+                        'difficulty' => $s->event->difficulty,
                         'scheduled_at' => $s->event->scheduled_at?->toIso8601String(),
+                        'leader_name' => $s->event->booster?->name ?? 'TBD',
                     ] : null,
                 ]);
         }

@@ -16,7 +16,9 @@ class AdvertiserDashboard extends Component
     #[Url(as: 'tab')]
     public $activeTab = 'overview';
     public $showPostModal = false;
-    public $title, $instance, $difficulty, $scheduled_at, $price;
+    public $raid_type, $difficulty, $scheduled_at, $group_type, $loot_type;
+    public $pot_size, $deposit, $owes, $buyer_name, $buyer_realm, $character_class;
+    public $payment_realm, $public_note, $private_note, $paid_full = false;
 
     protected $listeners = ['refreshDashboard' => '$refresh'];
 
@@ -25,28 +27,52 @@ class AdvertiserDashboard extends Component
         $this->sharedData = is_array($sharedData) ? $sharedData : [];
     }
 
-    public function postNewRequest()
+    public $selectedRaidId = null;
+
+    public function openAddBuyerModal($raidId)
+    {
+        $this->selectedRaidId = $raidId;
+        $this->showPostModal = true;
+    }
+
+    public function addBuyer()
     {
         $this->validate([
-            'title' => 'required|min:5',
-            'instance' => 'required',
-            'difficulty' => 'required',
-            'scheduled_at' => 'required|date|after:now',
-            'price' => 'required|numeric|min:0',
+            'deposit' => 'required|numeric|min:0',
+            'owes' => 'required|numeric|min:0',
+            'buyer_name' => 'required',
+            'buyer_realm' => 'required',
+            'character_class' => 'required',
+            'payment_realm' => 'required',
         ]);
 
-        RaidEvent::create([
-            'title' => $this->title,
-            'instance_name' => $this->instance,
-            'difficulty' => $this->difficulty,
-            'scheduled_at' => $this->scheduled_at,
-            'price_per_spot' => $this->price,
-            'requested_by_user_id' => Auth::id(),
-            'status' => RaidEvent::STATUS_PENDING,
+        if (!$this->selectedRaidId) {
+            $this->dispatch('notify', ['type' => 'error', 'message' => 'No raid selected.']);
+            return;
+        }
+
+        RaidSignup::create([
+            'raid_event_id' => $this->selectedRaidId,
+            'advertiser_user_id' => Auth::id(),
+            'character_name' => $this->buyer_name,
+            'buyer_realm' => $this->buyer_realm,
+            'class' => $this->character_class,
+            'payment_realm' => $this->payment_realm,
+            'deposit_amount' => $this->deposit,
+            'agreed_price' => $this->deposit + $this->owes,
+            'notes' => 'Public: ' . $this->public_note . ' | Private: ' . $this->private_note,
+            'is_paid' => $this->paid_full ? true : false,
+            'status' => 'accepted',
+            'is_booster' => false,
+            'attendance_status' => 'present'
         ]);
 
-        $this->reset(['title', 'instance', 'difficulty', 'scheduled_at', 'price', 'showPostModal']);
-        $this->dispatch('notify', ['type' => 'success', 'message' => 'Booking request posted successfully.']);
+        $this->reset([
+            'deposit', 'owes', 'buyer_name', 'buyer_realm', 'character_class',
+            'payment_realm', 'public_note', 'private_note', 'paid_full', 'showPostModal', 'selectedRaidId'
+        ]);
+        
+        $this->dispatch('notify', ['type' => 'success', 'message' => 'Buyer secured for raid!']);
         $this->dispatch('refreshDashboard');
     }
 

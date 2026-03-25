@@ -37,6 +37,9 @@ class RaidEvent extends Model
         'creation_source', 'requested_by_user_id', 'assigned_leader_id',
         'armor_stack', 'special_conditions', 'preferred_start_time', 'applications_close_at',
         'timing_type', 'flexible_time_note',
+        'raid_type', 'group_type', 'loot_type', 'pot_size', 'deposit', 'owes',
+        'buyer_name', 'buyer_realm', 'character_class', 'payment_realm',
+        'payment_faction', 'public_note', 'private_note', 'paid_full',
     ];
 
     protected $casts = [

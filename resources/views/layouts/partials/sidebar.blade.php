@@ -49,7 +49,7 @@
                         </a>
                     </li>
 
-                    <li>
+                     <li>
                         <button type="button" @click="balanceOpen = !balanceOpen" class="w-full group flex items-center justify-between px-6 py-3 text-sm font-semibold leading-6 text-gray-300 hover:text-white hover:bg-[#333] transition-colors border-l-4 border-transparent">
                             <div class="flex items-center gap-x-3">
                                 <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -58,10 +58,10 @@
                             <svg class="h-4 w-4 transform transition-transform duration-200" :class="{'rotate-180': balanceOpen}" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                         </button>
                         <ul x-show="balanceOpen" x-transition class="bg-[#222222] py-2" x-cloak>
-                            <li><a href="/dashboard?tab=balance" class="block py-2 pl-14 pr-6 text-sm text-gray-400 hover:text-white hover:text-emerald-500 transition-colors {{ request('tab') == 'balance' ? 'text-emerald-500' : '' }}">Balance</a></li>
+                            <li><a href="/dashboard?tab=balance" class="block py-2 pl-14 pr-6 text-sm text-gray-400 hover:text-white hover:text-emerald-500 transition-colors {{ request('tab') == 'balance' ? 'text-emerald-500' : '' }}">Live Ledger</a></li>
                             <li><a href="/dashboard?tab=deposits" class="block py-2 pl-14 pr-6 text-sm text-gray-400 hover:text-white hover:text-emerald-500 transition-colors {{ request('tab') == 'deposits' ? 'text-emerald-500' : '' }}">Deposits</a></li>
                             <li><a href="/dashboard?tab=web_bookings" class="block py-2 pl-14 pr-6 text-sm text-gray-400 hover:text-white hover:text-emerald-500 transition-colors {{ request('tab') == 'web_bookings' ? 'text-emerald-500' : '' }}">Website Bookings</a></li>
-                            <li><a href="/dashboard?tab=gold_collection" class="block py-2 pl-14 pr-6 text-sm text-gray-400 hover:text-white hover:text-emerald-500 transition-colors {{ request('tab') == 'gold_collection' ? 'text-emerald-500' : '' }}">My Gold Collection</a></li>
+                            <li><a href="/dashboard?tab=gold_collection" class="block py-2 pl-14 pr-6 text-sm text-gray-400 hover:text-white hover:text-emerald-500 transition-colors {{ request('tab') == 'gold_collection' ? 'text-emerald-500' : '' }}">Gold Collection</a></li>
                         </ul>
                     </li>
 
